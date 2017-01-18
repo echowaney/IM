@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_login"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/login_bk"
+    >
+    <ImageView
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/avatar3"
+        android:layout_marginTop="30dp"
+
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_regist_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_regist_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/username"
+            android:imeOptions="actionNext"
+            android:layout_margin="5dp"
+
+            />
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/til_regist_pwd"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_regist_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pwd"
+            android:inputType="numberPassword"
+            android:layout_margin="5dp"
+            android:imeOptions="actionDone"
+
+            />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/btn_regist"
+        android:text="@string/regist"
+        android:background="@drawable/btn_bg_selector"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:textColor="#fff"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginRight="@dimen/right_margin"
+
+        />
+
+
+</LinearLayout>
+
