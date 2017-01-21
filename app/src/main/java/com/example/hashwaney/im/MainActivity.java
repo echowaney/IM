@@ -1,6 +1,7 @@
 package com.example.hashwaney.im;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,7 +11,9 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.example.hashwaney.im.Factory.FragmentFactory;
 import com.example.hashwaney.im.base.BaseActivity;
+import com.example.hashwaney.im.base.BaseFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,9 +40,12 @@ public class MainActivity
         ButterKnife.inject(this);
         initToolbar();
         initBottomNavigation();
+        initFrgament();
 
 
     }
+
+
 
     //初始化toolbar
     private void initToolbar() {
@@ -70,9 +76,25 @@ public class MainActivity
 
         mBottomNavigationBar.setActiveColor(R.color.btn_pressed);
         mBottomNavigationBar.setInActiveColor(R.color.btn_default);
-
+        mBottomNavigationBar.setTabSelectedListener(this);
         mBottomNavigationBar.initialise();
 
+
+    }
+        //为了在进入到这个界面的时候，首先添加一个fragment，并且让其指定为第一个，进入到这个界面就去加载这个界面的数据
+    private void initFrgament() {
+        //创建fragment
+//        FragmentFactory.createFragment(0);
+
+//        FragmentTransaction transcation = getSupportFragmentManager().beginTransaction();
+//        BaseFragment        fragment    = FragmentFactory.createFragment(0);
+//        transcation.add(R.id.fl_content,fragment,"0");
+////        transcation.show(fragment);
+//        transcation.commit();
+
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_content,FragmentFactory.createFragment(0),"0").commit();
+        mTvTitle.setText(titles[0]);
 
     }
 
@@ -123,6 +145,26 @@ public class MainActivity
     @Override
     public void onTabSelected(int position) {
        //TODO
+        /**
+         * 首先判断是否存在fragment，
+         * 如果没有，就去创建这个fragment，
+         * 如果有直接让其显示
+         */
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.add(R.id.fl_content,FragmentFactory.createFragment(position),"position");
+
+
+
+        BaseFragment fragment = FragmentFactory.createFragment(position);
+        if (!fragment.isAdded()){
+            fragmentTransaction.add(R.id.fl_content,fragment,""+position);
+        }
+        fragmentTransaction
+                .show(fragment);
+        fragmentTransaction.commit();
+        mTvTitle.setText(titles[position]);
+
 
     }
     //条目未被选中

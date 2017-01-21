@@ -6,4 +6,7 @@
     <color name="btn_normal">#00ACFF</color>
     <color name="btn_pressed">#00A1DB</color>
     <color name="btn_default">#559c9c9c</color>
+
+
+    <color name="text_query_color">#339c9c9c</color>
 </resources>
