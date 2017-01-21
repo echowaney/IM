@@ -1,8 +1,12 @@
 package com.example.hashwaney.im.view;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,7 +18,7 @@ import android.widget.Toast;
 import com.example.hashwaney.im.MainActivity;
 import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.base.BaseActivity;
-import com.example.hashwaney.im.presenter.LoginPresenter;
+import com.example.hashwaney.im.presenter.impl.LoginPresenter;
 import com.example.hashwaney.im.util.StringUtils;
 
 import butterknife.ButterKnife;
@@ -27,6 +31,7 @@ public class LoginActivity
 {
 
 
+    private static final int REQUSET_PERMISSION = 1;
     @InjectView(R.id.et_user)
     EditText        mEtUser;
     @InjectView(R.id.til_user)
@@ -57,6 +62,11 @@ public class LoginActivity
          */
         mEtPwd.setText(getPwd());
         mEtUser.setText(getUser());
+
+        /**
+         * 1.动态申请权限
+         */
+
 
     }
 
@@ -121,16 +131,48 @@ public class LoginActivity
             mEtPwd.requestFocus(View.FOCUS_RIGHT);
 
             return;
+
         } else {
             mTilPwd.setErrorEnabled(false);
 
         }
+        /**
+         *
+         * 提出问题,为什么去动态申请权限,因为当前的应用没有访问我们手机的权限,因此需要去动态申请权限,
+         * 那么申请权限之前,需要去检查一下是什么权限导致不能够访问我们的手机,
+         * 就有一个语法规则,如果该权限不能等于受保护的权限,那么就去请求申请这个权限,
+         * 1.首先在登陆逻辑之前需要去动态申请权限
+         */
+        //1.检查权限
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PermissionChecker.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUSET_PERMISSION);
+            return;
+        }
+
+
 
         //进度条的显示
 
         showDialog("正在登录中.....");
         //点击登录按钮,进行登录的校验
-        mMLoginPre.onLogin(username, pwd);
+        mMLoginPre.onLogin(username, pwd);//----此方法的调用就是登陆的核心逻辑了
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            //如果当前的请求码是我们所要请求的
+        if (requestCode==REQUSET_PERMISSION){
+            //重新进行请求
+            login();
+
+        }
+
+
 
     }
 

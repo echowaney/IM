@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.base.BaseActivity;
-import com.example.hashwaney.im.presenter.RegistPresenter;
+import com.example.hashwaney.im.presenter.impl.RegistPresenter;
 import com.example.hashwaney.im.util.StringUtils;
 
 import butterknife.ButterKnife;

@@ -1,8 +1,9 @@
-package com.example.hashwaney.im.presenter;
+package com.example.hashwaney.im.presenter.impl;
 
 import android.os.Handler;
 
 import com.example.hashwaney.bean.User;
+import com.example.hashwaney.im.presenter.IRegistPresenter;
 import com.example.hashwaney.im.view.IRegistView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;

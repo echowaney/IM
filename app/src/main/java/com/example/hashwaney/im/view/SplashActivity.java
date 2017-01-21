@@ -11,7 +11,7 @@ import com.example.hashwaney.im.MainActivity;
 import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.adapter.AnimatorListenerAdapter;
 import com.example.hashwaney.im.base.BaseActivity;
-import com.example.hashwaney.im.presenter.SplashPresenter;
+import com.example.hashwaney.im.presenter.impl.SplashPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

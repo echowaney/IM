@@ -1,7 +1,8 @@
-package com.example.hashwaney.im.presenter;
+package com.example.hashwaney.im.presenter.impl;
 
 import android.os.Handler;
 
+import com.example.hashwaney.im.presenter.ILoginPresenter;
 import com.example.hashwaney.im.view.ILoginView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;

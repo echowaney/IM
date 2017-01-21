@@ -1,5 +1,6 @@
-package com.example.hashwaney.im.presenter;
+package com.example.hashwaney.im.presenter.impl;
 
+import com.example.hashwaney.im.presenter.ISplashPresenter;
 import com.example.hashwaney.im.view.ISplashView;
 import com.hyphenate.chat.EMClient;
 
