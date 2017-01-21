@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.example.hashwaney.im.db.DBUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 
@@ -29,6 +30,15 @@ public class MyApplication
 
         initHuanxin();
         initBomb();
+        //初始化数据库
+        initDb();
+
+
+    }
+
+    private void initDb() {
+        DBUtils.initDB(this);
+
 
 
     }
