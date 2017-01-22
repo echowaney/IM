@@ -1,4 +1,4 @@
-package com.example.hashwaney.im.view;
+package com.example.hashwaney.im.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.presenter.impl.LoginPresenter;
 import com.example.hashwaney.im.util.StringUtils;
+import com.example.hashwaney.im.view.ILoginView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

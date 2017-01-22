@@ -2,9 +2,9 @@ package com.example.hashwaney.im.presenter.impl;
 
 import android.os.Handler;
 
+import com.example.hashwaney.im.listener.HMCallbackListener;
 import com.example.hashwaney.im.presenter.ILoginPresenter;
 import com.example.hashwaney.im.view.ILoginView;
-import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
 /**
@@ -23,49 +23,15 @@ public class LoginPresenter
     @Override
     public void onLogin(final String username, final String pwd) {
         //环信服务器校验用户登录账号和密码
-        EMClient.getInstance().login(username, pwd, new EMCallBack() {
+        EMClient.getInstance().login(username, pwd, new HMCallbackListener() {
             @Override
-            public void onSuccess() {
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mILoginView.loginCheck(username,pwd,true,null);
-                            }
-                        });
-
-
-                    }
-                }).start();
-                //校验通过,成功登录
-
+            public void onMainSuccess() {
+                mILoginView.loginCheck(username,pwd,true,null);
             }
 
             @Override
-            public void onError(int i, final String s) {
-                //校验失败,登录失败
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mILoginView.loginCheck(username,pwd,false,s);
-                            }
-                        });
-
-                    }
-                }).start();
-
-
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
+            public void onMaiError(int i, String s) {
+                mILoginView.loginCheck(username,pwd,false,s);
             }
         });
 

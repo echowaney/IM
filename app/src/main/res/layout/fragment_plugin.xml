@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+              android:orientation="vertical"
+             android:layout_height="match_parent">
+
+    <ImageView
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/default_avatar"
+        android:layout_marginTop="30dp"
+
+        />
+    <Button
+        android:id="@+id/btn_logout"
+        android:text="@string/logout"
+        android:gravity="center"
+        android:background="@drawable/btn_normal_logout_bg"
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:textColor="#fff"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/left_margin"
+        android:layout_marginRight="@dimen/right_margin"
+
+        />
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </CalendarView>
+
+</LinearLayout>

@@ -62,7 +62,7 @@
             >
         </activity>
         <activity
-            android:name=".view.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/AppTheme.FullSreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -70,9 +70,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.LoginActivity" android:launchMode="singleTask">
+        <activity android:name=".activity.LoginActivity" android:launchMode="singleTask">
         </activity>
-        <activity android:name=".view.RegistActivity">
+        <activity android:name=".activity.RegistActivity">
         </activity>
     </application>
 

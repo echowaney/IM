@@ -33,7 +33,7 @@ public class DBUtils {
      *根据登陆用户来获取当前用户的联系人
      */
 
-    public List<String> getContact(String username) {
+    public static List<String> getContact(String username) {
         //判断一下是否已经进行了数据库的初始化,不然没有数据可以进行查询
         if (!init){
 
@@ -43,7 +43,7 @@ public class DBUtils {
 
         ContactSqliteOpenHelper openHelper = new ContactSqliteOpenHelper(sContext);
         SQLiteDatabase          database   = openHelper.getReadableDatabase();
-        database.beginTransaction();
+//        database.beginTransaction();
         Cursor cursor = database.query(ContactSqliteOpenHelper.T_CONTACT,
                                       new String[]{ContactSqliteOpenHelper.CONTACT},
                                       ContactSqliteOpenHelper.USERNAME + " =?",
@@ -59,8 +59,8 @@ public class DBUtils {
             }
             cursor.close();
         }
-        database.endTransaction();
-        database.setTransactionSuccessful();
+//        database.endTransaction();
+//        database.setTransactionSuccessful();
         database.close();
 
         return contactLists;
@@ -70,10 +70,10 @@ public class DBUtils {
     //更新数据库中联系人
     /**
      * 1. 首先更新之前,要进行数据的清空,保证拿到的是最新的数据
-     * 2. 在清空之后,将返回的数据写入到数据库中
+     * 2. 在清空之后,将返回的数据contactList写入到数据库中
      */
 
-    public void updateContact(String username ,List<String> contactList){
+    public static void updateContact(String username ,List<String> contactList){
         ContactSqliteOpenHelper openHelper = new ContactSqliteOpenHelper(sContext);
         SQLiteDatabase          writableDatabase = openHelper.getWritableDatabase();
 
@@ -82,7 +82,7 @@ public class DBUtils {
         //开启一个事务
         writableDatabase.beginTransaction();
 
-        writableDatabase.delete(ContactSqliteOpenHelper.T_CONTACT,ContactSqliteOpenHelper.USERNAME,new String[]{username});
+        writableDatabase.delete(ContactSqliteOpenHelper.T_CONTACT,ContactSqliteOpenHelper.USERNAME+"=?",new String[]{username});
         ContentValues values =new ContentValues();
         values.put(ContactSqliteOpenHelper.USERNAME,username);
         for (int i = 0; i <contactList.size() ; i++) {
@@ -91,8 +91,9 @@ public class DBUtils {
             writableDatabase.insert(ContactSqliteOpenHelper.T_CONTACT, null, values);
 
         }
-        writableDatabase.endTransaction();
+//
         writableDatabase.setTransactionSuccessful();
+        writableDatabase.endTransaction();
         //关闭数据库
         writableDatabase.close();
 

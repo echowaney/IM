@@ -21,34 +21,39 @@ public class FragmentFactory {
         BaseFragment baseFragment = null;
         switch (position) {
             case 0:
-                if (mContactFragment == null) {
-                    synchronized (FragmentFactory.class) {
-                        if (mContactFragment == null) {
-                            baseFragment = new ContactFragment();
-                        }
-                    }
-                }
-                break;
-
-            case 1:
                 if (mConversationFragment == null) {
                     synchronized (FragmentFactory.class) {
                         if (mConversationFragment == null) {
-                            baseFragment = new ConversationFragment();
+                            mConversationFragment = new ConversationFragment();
                         }
                     }
                 }
-
+                baseFragment=mConversationFragment;
                 break;
+            case 1:
+                if (mContactFragment == null) {
+                    synchronized (FragmentFactory.class){
+
+                        if (mContactFragment==null){
+
+                            mContactFragment = new ContactFragment();
+                        }
+                    }
+
+                    }
+                baseFragment =mContactFragment;
+                break;
+
+
             case 2:
                 if (mPluginFragment == null) {
                     synchronized (FragmentFactory.class) {
                         if (mPluginFragment == null) {
-                            baseFragment = new PluginFragment();
+                            mPluginFragment = new PluginFragment();
                         }
                     }
                 }
-
+                baseFragment=mPluginFragment;
                 break;
         }
     return baseFragment;

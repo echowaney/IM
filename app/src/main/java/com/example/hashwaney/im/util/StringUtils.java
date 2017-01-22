@@ -27,4 +27,15 @@ public class StringUtils {
 
 
     }
+
+    //截取字符串
+    public static  String getSearchTitle(String search){
+        if (TextUtils.isEmpty(search)){
+            return search;
+        }
+        //获取首字母
+        String single = search.substring(0, 1)
+                         .toUpperCase();
+        return single;
+    }
 }

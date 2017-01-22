@@ -1,4 +1,4 @@
-package com.example.hashwaney.im.view;
+package com.example.hashwaney.im.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -11,6 +11,7 @@ import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.presenter.impl.RegistPresenter;
 import com.example.hashwaney.im.util.StringUtils;
+import com.example.hashwaney.im.view.IRegistView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -93,7 +94,7 @@ public class RegistActivity
             saveUser(username,pwd);
 
             //2.跳转到登录界面,
-            startActivity(LoginActivity.class,true);
+            startActivity(LoginActivity.class, true);
 
         }else {
             //注册失败,弹出一个吐司

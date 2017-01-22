@@ -1,4 +1,4 @@
-package com.example.hashwaney.im.view;
+package com.example.hashwaney.im.activity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -12,6 +12,7 @@ import com.example.hashwaney.im.R;
 import com.example.hashwaney.im.adapter.AnimatorListenerAdapter;
 import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.presenter.impl.SplashPresenter;
+import com.example.hashwaney.im.view.ISplashView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -60,7 +61,7 @@ public class SplashActivity
 //                    Intent intent =new Intent(context,LoginActivity.class);
 //                    startActivity(intent);
 //                    finish();
-                    startActivity(LoginActivity.class,true);
+                    startActivity(LoginActivity.class, true);
 
                 }
             });

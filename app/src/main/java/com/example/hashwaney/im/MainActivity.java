@@ -1,6 +1,8 @@
 package com.example.hashwaney.im;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
@@ -70,6 +72,8 @@ public class MainActivity
         BottomNavigationItem conversationItem =new BottomNavigationItem(R.mipmap.conversation_selected_2,"消息");
         BottomNavigationItem contactItem=new BottomNavigationItem(R.mipmap.contact_selected_2,"联系人");
         BottomNavigationItem pluginItem =new BottomNavigationItem(R.mipmap.plugin_selected_2,"动态");
+
+
         mBottomNavigationBar.addItem(conversationItem);
         mBottomNavigationBar.addItem(contactItem);
         mBottomNavigationBar.addItem(pluginItem);
@@ -84,15 +88,19 @@ public class MainActivity
         //为了在进入到这个界面的时候，首先添加一个fragment，并且让其指定为第一个，进入到这个界面就去加载这个界面的数据
     private void initFrgament() {
         //创建fragment
-//        FragmentFactory.createFragment(0);
+       // FragmentFactory.createFragment(0);
+        //如果Activity中已经有老的的fragment的,先全部移除,避免重影
+        FragmentManager     supportFragmentManager = getSupportFragmentManager();
+        FragmentTransaction beginTransaction       =supportFragmentManager.beginTransaction();
 
-//        FragmentTransaction transcation = getSupportFragmentManager().beginTransaction();
-//        BaseFragment        fragment    = FragmentFactory.createFragment(0);
-//        transcation.add(R.id.fl_content,fragment,"0");
-////        transcation.show(fragment);
-//        transcation.commit();
-
-
+        for (int i = 0; i <titles.length ; i++) {
+            Fragment fragment =  supportFragmentManager.findFragmentByTag(i+"");
+            if (fragment!=null){
+                beginTransaction.remove(fragment);
+            }
+        }
+        beginTransaction.commit();
+        //默认选中第一个fragment
         getSupportFragmentManager().beginTransaction().add(R.id.fl_content,FragmentFactory.createFragment(0),"0").commit();
         mTvTitle.setText(titles[0]);
 
@@ -136,6 +144,10 @@ public class MainActivity
             case R.id.add_friend:
 //                TODO
                 break;
+            case android.R.id.home:
+                finish();
+
+                break;
         }
 
         return true;
@@ -163,6 +175,7 @@ public class MainActivity
         fragmentTransaction
                 .show(fragment);
         fragmentTransaction.commit();
+
         mTvTitle.setText(titles[position]);
 
 
@@ -171,6 +184,9 @@ public class MainActivity
     @Override
     public void onTabUnselected(int position) {
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        BaseFragment fragment = FragmentFactory.createFragment(position);
+        fragmentTransaction.hide(fragment).commit();
     }
     //条目被再次选中
     @Override

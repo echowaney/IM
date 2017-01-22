@@ -25,7 +25,8 @@ public class ContactSqliteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql ="creat table "+T_CONTACT+"(_id integer primary key autoincrement, "+ USERNAME +" varchar(20),"+ CONTACT +" varchar(20))";
+//        db.execSQL("create table " + T_CONTACT + "(_id integer primary key," + USERNAME + " varchar(20)," + CONTACT + " varchar(20))");
+        String sql ="create table "+ T_CONTACT + "(_id integer primary key autoincrement, " + USERNAME + " varchar(20),"+ CONTACT + " varchar(20))";
         db.execSQL(sql);
     }
 
