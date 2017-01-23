@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.hashwaney.im.util.Constans;
 
@@ -21,6 +22,8 @@ public class BaseActivity
 
     private SharedPreferences mSp;
     public ProgressDialog    mDialog;
+    private Toast sToast;
+    private Toast mToast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +91,14 @@ public class BaseActivity
         super.onDestroy();
         //界面销毁的时候进行界面的销毁
       mDialog.dismiss();
-
+    }
+    public void showToast(String msg){
+        if (mToast==null){
+            mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        }
+        mToast.setText(msg);
+        mToast.show();
 
     }
+
 }

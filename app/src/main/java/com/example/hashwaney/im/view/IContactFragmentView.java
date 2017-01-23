@@ -11,4 +11,6 @@ public interface IContactFragmentView {
     void onInitContact(List<String> contactLists);
     //更新联系人
     void updateContacts(boolean b, String message);
+    //删除联系人
+    void onDeleteContact(String contact, String msg, boolean isDel);
 }

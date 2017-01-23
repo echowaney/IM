@@ -40,10 +40,10 @@ public class ContactFragmentAdapter
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder holder, int position) {
+    public void onBindViewHolder(ContactViewHolder holder, final int position) {
 
-        String username = contacts.get(position);
-        String search   = StringUtils.getSearchTitle(username);
+        final String username = contacts.get(position);
+        String       search   = StringUtils.getSearchTitle(username);
         holder.mTv_search.setText(search);
         holder.mTv_name.setText(username);
         if (position == 0) {
@@ -64,9 +64,39 @@ public class ContactFragmentAdapter
                 holder.mTv_search.setVisibility(View.VISIBLE);
             }
         }
+        //给条目设置长按点击事件
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //回调点击方法
+                if (mOnItemLongClickListener!=null){
+                 mOnItemLongClickListener.onItemLongClick(username,position);
+
+
+                }
+                return true;//消费事件
+            }
+        });
 
 
     }
+    //由于recycleview没有条目长按点击事件,
+    //那么就将这个事件转换到adapter中
+    //实现这么一个功能,长按条目弹出对话框,进行条目的删除
+    //要将当前条目的联系人和角标传递过去,因此需要通过接口回调
+    public interface OnItemLongClickListener{
+        //设置一个点击回调方法
+        void onItemLongClick(String contact, int position);
+
+    }
+    private OnItemLongClickListener mOnItemLongClickListener;
+    //对外暴露方法
+    public void  setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener){
+        this.mOnItemLongClickListener=onItemLongClickListener;
+
+    }
+
+
 
     @Override
     public int getItemCount() {

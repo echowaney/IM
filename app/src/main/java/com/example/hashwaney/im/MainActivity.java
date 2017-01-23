@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.hashwaney.im.Factory.FragmentFactory;
+import com.example.hashwaney.im.activity.AddFriendActivity;
 import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.base.BaseFragment;
 
@@ -142,7 +143,8 @@ public class MainActivity
                      .show();
                  break;
             case R.id.add_friend:
-//                TODO
+//              跳转到添加好友界面
+                startActivity(AddFriendActivity.class,false);
                 break;
             case android.R.id.home:
                 finish();

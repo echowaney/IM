@@ -52,7 +52,7 @@ public class ContactFragmentPresenter
         List<String> contact = DBUtils.getContact(currentname);
 
         //清空该集合,添加数据到集合中
-        contactLists.clear();;
+        contactLists.clear();
         contactLists.addAll(contact);
 
         //view层进行初始化
@@ -107,15 +107,15 @@ public class ContactFragmentPresenter
 
 
 
-
+                    //更新数据库----因为从 1服务器去拿数据,势必导致数据库中的数据发生变化,因此就需要去更新数据库
+                    DBUtils.updateContact(currentname,allContactsFromServer);
                     //通知view 层去更新数据并且进行ui的刷新---注意这是有异常的,所以需要分情况
                     //将原先到的集合清空,
                     contactLists.clear();
 
                     //将从服务器获取的数据添加到集合中,
                     contactLists.addAll(allContactsFromServer);
-                    //更新数据库----因为从 1服务器去拿数据,势必导致数据库中的数据发生变化,因此就需要去更新数据库
-                    DBUtils.updateContact(currentname,contactLists);
+
 
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
@@ -150,6 +150,35 @@ public class ContactFragmentPresenter
     @Override
     public void updateUserContacts() {
         updateContacts(EMClient.getInstance().getCurrentUser());
+    }
+
+    //删除联系人
+    @Override
+    public void deleteContacts(final String contact) {
+        //开辟线程
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().contactManager().deleteContact(contact);
+                    deleteContactAndUpdateView(contact,null,true);
+                } catch (final HyphenateException e) {
+                    e.printStackTrace();
+                    deleteContactAndUpdateView(contact,e.getMessage(),false);
+                }
+
+            }
+        });
+    }
+
+    private void deleteContactAndUpdateView(final String contact, final String e,
+                                            final boolean isDelete) {
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                mIContactFragmentView.onDeleteContact(contact,e,isDelete);
+            }
+        });
     }
 
 
