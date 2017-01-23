@@ -6,6 +6,7 @@ package com.example.hashwaney.im.presenter;
 
 public interface IContactFragmetPresenter {
     void  initContact();
+    void updateUserContacts();
 
 
 }

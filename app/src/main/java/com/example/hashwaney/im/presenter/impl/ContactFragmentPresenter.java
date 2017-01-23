@@ -62,6 +62,7 @@ public class ContactFragmentPresenter
 
     }
 
+
     private void updateContacts(final String currentname) {
         //开启子线程去环信服务器中去取数据
 //        new Thread(new Runnable() {
@@ -141,6 +142,14 @@ public class ContactFragmentPresenter
 
 
 
+    }
+
+    /**
+     * 更新用户联系人,
+     */
+    @Override
+    public void updateUserContacts() {
+        updateContacts(EMClient.getInstance().getCurrentUser());
     }
 
 

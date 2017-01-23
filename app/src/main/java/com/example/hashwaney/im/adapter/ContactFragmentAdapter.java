@@ -17,7 +17,7 @@ import java.util.List;
 
  */
 public class ContactFragmentAdapter
-        extends RecyclerView.Adapter<ContactFragmentAdapter.ContactViewHolder>
+        extends RecyclerView.Adapter<ContactFragmentAdapter.ContactViewHolder>implements IContactAdapter
 {
 
     private List<String> contacts;
@@ -73,6 +73,11 @@ public class ContactFragmentAdapter
         return contacts == null
                ? 0
                : contacts.size();
+    }
+
+    @Override
+    public List<String> getData() {
+        return contacts;
     }
 
     class ContactViewHolder

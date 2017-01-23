@@ -95,7 +95,7 @@ public class MainActivity
 
         for (int i = 0; i <titles.length ; i++) {
             Fragment fragment =  supportFragmentManager.findFragmentByTag(i+"");
-            if (fragment!=null){
+            if (fragment!=null){            //进行为空判断，不然会导致空指针异常
                 beginTransaction.remove(fragment);
             }
         }
