@@ -5,10 +5,12 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.example.hashwaney.im.adapter.MessageListenerAdapter;
 import com.example.hashwaney.im.db.DBUtils;
 import com.example.hashwaney.im.event.OnContactEvent;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.exceptions.HyphenateException;
 
@@ -71,9 +73,12 @@ public class MyApplication
 
         //初始化一个好友管理事件监听
         initContactManageListener();
+        //初始化消息接收事件
+        initMessageReceive();
 
 
     }
+
 
     private void initContactManageListener() {
 
@@ -82,12 +87,14 @@ public class MyApplication
                 .setContactListener(new EMContactListener() {
                     @Override
                     public void onContactAdded(String username) {
-                        EventBus.getDefault().post(new OnContactEvent(username,true));
+                        EventBus.getDefault()
+                                .post(new OnContactEvent(username, true));
                     }
 
                     @Override
                     public void onContactDeleted(String username) {
-                        EventBus.getDefault().post(new OnContactEvent(username,false));
+                        EventBus.getDefault()
+                                .post(new OnContactEvent(username, false));
 
                     }
 
@@ -95,7 +102,9 @@ public class MyApplication
                     public void onContactInvited(String username, String reason) {
                         //接收好友邀请 通过环信服务器
                         try {
-                            EMClient.getInstance().contactManager().acceptInvitation(username);
+                            EMClient.getInstance()
+                                    .contactManager()
+                                    .acceptInvitation(username);
                         } catch (HyphenateException e) {
                             e.printStackTrace();
                         }
@@ -114,6 +123,25 @@ public class MyApplication
                     }
                 });
 
+
+    }
+
+    //该方法用来初始化环信接收的信息
+    private void initMessageReceive() {
+        EMClient.getInstance()
+                .chatManager()
+                .addMessageListener(new MessageListenerAdapter(){
+                    @Override
+                    public void onMessageReceived(List<EMMessage> list) {
+                        super.onMessageReceived(list);
+
+                        //环信将接收到的消息推送给应用
+                        Log.d(TAG, "onMessageReceived: "+list.get(0));
+                        if (list !=null && list.size()>0)
+                            EventBus.getDefault().post(list.get(0));
+
+                    }
+                });
 
     }
 

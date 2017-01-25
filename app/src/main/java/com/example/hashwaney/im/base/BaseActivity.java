@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.example.hashwaney.im.util.Constans;
@@ -50,12 +51,19 @@ public class BaseActivity
     //  getPwd()getUser())
     //跳转界面,当页面跳转完之后,可以根据是否要将之前的activity给销毁掉,前提是跳转完成之后
     public void startActivity(Class clazz, boolean isFinish) {
+       startActivity(clazz,isFinish,null);
+
+    }
+    //跳转页面 需要进行数据的传递
+    public void startActivity(Class clazz,boolean isFinish,String contact){
         Intent intent = new Intent(this, clazz);
+        if (!TextUtils.isEmpty(contact)){
+            intent.putExtra("username",contact);
+        }
         startActivity(intent);
         if (isFinish) {
             finish();
         }
-
     }
 
     //进行密码的获取 ---z

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_chat"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/btn_normal"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+
+
+        >
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="与ABC聊天中"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="22sp"
+            android:id="@+id/tv_title"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"/>
+
+
+    </android.support.v7.widget.Toolbar>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/recycleview"
+        android:layout_weight="1"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:hint="消息:"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/et_msg"
+            android:layout_margin="5dp"
+            android:layout_height="match_parent"/>
+
+        <Button
+
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:text="发送"
+            android:id="@+id/btn_send"
+            android:layout_gravity="center_vertical"
+            android:textColor="#ffffff"
+            android:layout_width="65dp"
+            android:background="@drawable/btn_send_selector"
+            android:layout_height="40dp"/>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

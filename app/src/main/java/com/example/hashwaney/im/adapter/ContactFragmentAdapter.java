@@ -31,9 +31,9 @@ public class ContactFragmentAdapter
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //        View view = LayoutInflater.from(sContext)
-        //                                     .inflate(R.layout.contact_item_view, parent);
+        //                                     .inflate(R.layout.list_item_contact, parent);
         View view = LayoutInflater.from(parent.getContext())
-                                  .inflate(R.layout.contact_item_view, parent,false);
+                                  .inflate(R.layout.list_item_contact, parent, false);
         ContactViewHolder holder = new ContactViewHolder(view);
 
         return holder;
@@ -69,12 +69,21 @@ public class ContactFragmentAdapter
             @Override
             public boolean onLongClick(View v) {
                 //回调点击方法
-                if (mOnItemLongClickListener!=null){
-                 mOnItemLongClickListener.onItemLongClick(username,position);
+                if (mOnItemClickListener!=null){
+                 mOnItemClickListener.onItemLongClick(username,position);
 
 
                 }
                 return true;//消费事件
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemClickListener!=null){
+                    mOnItemClickListener.onItemClick(username,position);
+
+                }
             }
         });
 
@@ -84,15 +93,16 @@ public class ContactFragmentAdapter
     //那么就将这个事件转换到adapter中
     //实现这么一个功能,长按条目弹出对话框,进行条目的删除
     //要将当前条目的联系人和角标传递过去,因此需要通过接口回调
-    public interface OnItemLongClickListener{
+    public interface OnItemClickListener{
         //设置一个点击回调方法
         void onItemLongClick(String contact, int position);
+        void onItemClick(String contact,int position);
 
     }
-    private OnItemLongClickListener mOnItemLongClickListener;
+    private OnItemClickListener mOnItemClickListener;
     //对外暴露方法
-    public void  setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener){
-        this.mOnItemLongClickListener=onItemLongClickListener;
+    public void  setOnItemLongClickListener(OnItemClickListener onItemLongClickListener){
+        this.mOnItemClickListener=onItemLongClickListener;
 
     }
 

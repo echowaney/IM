@@ -3,7 +3,6 @@ package com.example.hashwaney.im.activity;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -41,10 +40,11 @@ public class SplashActivity
     public void onCheckLogined(boolean isLogined) {
         if (isLogined){
             //2.如果登陆 直接进入到mainactivity
-            Intent intent
-                    =new Intent(context, MainActivity.class);
-            startActivity(intent);
-            finish();
+//            Intent intent
+//                    =new Intent(context, MainActivity.class);
+//            startActivity(intent);
+           // finish();
+            startActivity(MainActivity.class,true);
 
 
         }else{

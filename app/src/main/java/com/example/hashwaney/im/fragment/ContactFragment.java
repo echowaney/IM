@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.hashwaney.im.MainActivity;
 import com.example.hashwaney.im.R;
+import com.example.hashwaney.im.activity.ChatActivity;
 import com.example.hashwaney.im.adapter.ContactFragmentAdapter;
 import com.example.hashwaney.im.base.BaseFragment;
 import com.example.hashwaney.im.event.OnContactEvent;
@@ -32,7 +34,7 @@ import java.util.List;
 public class ContactFragment
         extends BaseFragment
         implements IContactFragmentView, SwipeRefreshLayout.OnRefreshListener,
-                   ContactFragmentAdapter.OnItemLongClickListener
+                   ContactFragmentAdapter.OnItemClickListener
 {
 
     private ContactLayout            mContactView;
@@ -146,6 +148,14 @@ public class ContactFragment
 
                 .show();
 
+
+    }
+
+    //点击通讯录,跳转到聊天界面
+    @Override
+    public void onItemClick(String contact, int position) {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.startActivity(ChatActivity.class,false,contact);
 
     }
 }

@@ -6,4 +6,6 @@
     <dimen name="right_margin">10dp</dimen>
     <dimen name="left_margin">10dp</dimen>
     <dimen name="toolbar_text">20sp</dimen>
+    <dimen name="image_height">60dp</dimen>
+    <dimen name="image_width">60dp</dimen>
 </resources>
