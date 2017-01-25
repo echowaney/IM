@@ -77,7 +77,7 @@ public class ContactFragment
         //数据传输到了adapter
         mAdapter = new ContactFragmentAdapter(contactLists);
         mContactView.setAdapter(mAdapter);
-        mAdapter.setOnItemLongClickListener(this);
+        mAdapter.setOnItemClickListener(this);
 
     }
 

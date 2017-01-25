@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="6dp"
+
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_marginBottom="1dp"
+    android:layout_height="wrap_content">
+<RelativeLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_usericon"
+        android:layout_margin="10dp"
+        android:layout_width="@dimen/usericon"
+        android:layout_height="@dimen/usericon"
+        android:src="@mipmap/avatar3"
+        />
+
+    <LinearLayout
+        android:layout_toRightOf="@id/iv_usericon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:id="@+id/tv_username"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="17:30"
+                android:textSize="14sp"
+                android:textColor="#9c9c9c"
+                android:layout_margin="10dp"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#9c9c9c"
+                android:text="你好吗"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/tv_uread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:textSize="10sp"
+                android:padding="2dp"
+                android:textColor="#FFFFFF"
+                android:text="9"
+                android:gravity="center"
+                android:background="@mipmap/unread_all"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+</android.support.v7.widget.CardView>

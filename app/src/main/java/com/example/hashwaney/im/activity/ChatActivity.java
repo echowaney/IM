@@ -175,8 +175,13 @@ public class ChatActivity
         mAdapter = new ChatAdapter(emMessagesLists);
         mRecycleview.setLayoutManager(new LinearLayoutManager(this));
         mRecycleview.setAdapter(mAdapter);
+        if(emMessagesLists.size()!=0){
         //让用户一进入聊天界面就可以看到最近的聊天记录,所以让adapter滚动到最后一条
-        mRecycleview.smoothScrollToPosition(emMessagesLists.size()-1);
+            //TODO 直接显示最后一条数据 ,体验更好
+//        mRecycleview.smoothScrollToPosition(emMessagesLists.size()-1);
+            mRecycleview.scrollToPosition(emMessagesLists.size()-1);
+
+        }
 
     }
 

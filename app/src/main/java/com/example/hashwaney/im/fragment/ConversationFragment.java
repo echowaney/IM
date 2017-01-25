@@ -2,12 +2,27 @@ package com.example.hashwaney.im.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hashwaney.im.R;
+import com.example.hashwaney.im.adapter.ConversationAdapter;
 import com.example.hashwaney.im.base.BaseFragment;
+import com.example.hashwaney.im.presenter.IConversationPresenter;
+import com.example.hashwaney.im.presenter.impl.ConverstationPresenter;
+import com.example.hashwaney.im.view.IConversationView;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * Created by HashWaney on 2017/1/21.
@@ -15,13 +30,77 @@ import com.example.hashwaney.im.base.BaseFragment;
 
 public class ConversationFragment
         extends BaseFragment
+        implements IConversationView, View.OnClickListener
 {
+
+    private RecyclerView           mRecycleview;
+    private FloatingActionButton   mFab;
+    private IConversationPresenter mIConversationPresenter;
+    private ConversationAdapter    mAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState)
     {
-      return inflater.inflate(R.layout.fragment_conversation,container,false);
+        return inflater.inflate(R.layout.fragment_conversation, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecycleview = (RecyclerView) view.findViewById(R.id.recycleview);
+        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+
+        /**
+         * 1.初始化会话列表
+         */
+        mIConversationPresenter = new ConverstationPresenter(this);
+        mIConversationPresenter.initConverstation();
+        //2.给fab设置点击事件
+        mFab.setOnClickListener(this);
+
+        //通过eventbus 来接收消息----用户会话发生变化了 //TODO Fragment 和 Activity的级别是一样的
+        EventBus.getDefault().register(this);
+      //  Log.d("result", "onViewCreated: this = "+ this  +     (this.equals(getActivity()))   +"  getActivity() =  "+getActivity().toString());
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EMMessage emMessage) {
+        //接收到这个消息 ,然后进行更新数据
+        //重新去环信的数据中找数据
+        //在初始化的时候,就已经去数据库中找了数据
+        //可以将初始化这个方法重新调用一下
+        mIConversationPresenter.initConverstation();
+        //TODO 这里如果直接调用  mAdapter.notifyDataSetChanged()是只对老的会话生效的, 如果又有新的用户给你发消息 是不会显示的.
+
+    }
+
+    @Override
+    public void initConversationView(List<EMConversation> emConversationList) {
+        if (mAdapter == null) {
+            mRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mAdapter = new ConversationAdapter(emConversationList);
+            mRecycleview.setAdapter(mAdapter);
+        }else {
+            mAdapter.notifyDataSetChanged();//那就更新一下数据
+        }
+
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault()
+                .unregister(this);
     }
 }

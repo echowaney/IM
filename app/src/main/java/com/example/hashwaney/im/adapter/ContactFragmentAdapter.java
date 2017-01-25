@@ -101,7 +101,7 @@ public class ContactFragmentAdapter
     }
     private OnItemClickListener mOnItemClickListener;
     //对外暴露方法
-    public void  setOnItemLongClickListener(OnItemClickListener onItemLongClickListener){
+    public void setOnItemClickListener(OnItemClickListener onItemLongClickListener){
         this.mOnItemClickListener=onItemLongClickListener;
 
     }

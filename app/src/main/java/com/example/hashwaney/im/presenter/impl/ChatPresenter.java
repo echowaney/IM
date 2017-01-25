@@ -39,7 +39,8 @@ public class ChatPresenter
 
     }
 
-    private void updateData(String contact) {//获取到聊天记录
+    private void updateData(String contact) {
+        //获取会话记录 --通过会话拿到聊天的信息
         EMConversation conversation = EMClient.getInstance()
                                               .chatManager()
                                               .getConversation(contact);
