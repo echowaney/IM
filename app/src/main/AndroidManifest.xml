@@ -57,7 +57,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".activity.SplashActivity"

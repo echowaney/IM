@@ -46,6 +46,8 @@ public class ChatPresenter
                                               .getConversation(contact);
         Log.d("result", "onInitConversation: " + conversation);
         if (conversation != null) {
+            //将消息标记为已读
+            conversation.markAllMessagesAsRead();
 
             //     conversation.getAllMessages();=----只能获取单条数据
             EMMessage lastMessage = conversation.getLastMessage();
@@ -56,7 +58,7 @@ public class ChatPresenter
                 count = mEMMessagesLists.size();
             }
 
-
+            //从数据库中查询数据是根据
             List<EMMessage> emMessages = conversation.loadMoreMsgFromDB(msgId, count);
             Log.d("result", "onInitConversation: " + emMessages.toString());
             Collections.reverse(emMessages);

@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.hashwaney.im.MainActivity;
 import com.example.hashwaney.im.R;
+import com.example.hashwaney.im.activity.ChatActivity;
 import com.example.hashwaney.im.adapter.ConversationAdapter;
 import com.example.hashwaney.im.base.BaseFragment;
 import com.example.hashwaney.im.presenter.IConversationPresenter;
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class ConversationFragment
         extends BaseFragment
-        implements IConversationView, View.OnClickListener
+        implements IConversationView, View.OnClickListener, ConversationAdapter.OnItemClickListener
 {
 
     private RecyclerView           mRecycleview;
@@ -51,6 +53,7 @@ public class ConversationFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecycleview = (RecyclerView) view.findViewById(R.id.recycleview);
+        mRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
 
         /**
@@ -62,8 +65,9 @@ public class ConversationFragment
         mFab.setOnClickListener(this);
 
         //通过eventbus 来接收消息----用户会话发生变化了 //TODO Fragment 和 Activity的级别是一样的
-        EventBus.getDefault().register(this);
-      //  Log.d("result", "onViewCreated: this = "+ this  +     (this.equals(getActivity()))   +"  getActivity() =  "+getActivity().toString());
+        EventBus.getDefault()
+                .register(this);
+        //  Log.d("result", "onViewCreated: this = "+ this  +     (this.equals(getActivity()))   +"  getActivity() =  "+getActivity().toString());
 
     }
 
@@ -82,26 +86,45 @@ public class ConversationFragment
         mIConversationPresenter.initConverstation();
         //TODO 这里如果直接调用  mAdapter.notifyDataSetChanged()是只对老的会话生效的, 如果又有新的用户给你发消息 是不会显示的.
 
-//        aaa
+        //        aaa
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //更新一下adapter
+        if (mAdapter !=null){
+
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void initConversationView(List<EMConversation> emConversationList) {
-        if (mAdapter == null) {
-            mRecycleview.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mAdapter = new ConversationAdapter(emConversationList);
-            mRecycleview.setAdapter(mAdapter);
-        }else {
-            mAdapter.notifyDataSetChanged();//那就更新一下数据
-        }
+        //        if (mAdapter == null) {
+
+        mAdapter = new ConversationAdapter(emConversationList);
+        mRecycleview.setAdapter(mAdapter);
+        mAdapter.setOnIntemClick(this);
+        //        }else {
+        //            mAdapter.notifyDataSetChanged();//那就更新一下数据 //TODO 这里有一个bug 就是把这里注释掉 就可以展示出来
+        //        }
 
 
     }
+
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault()
                 .unregister(this);
+    }
+
+    @Override
+    public void onItemClick(String username) {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.startActivity(ChatActivity.class, false, username);
+
     }
 }

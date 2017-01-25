@@ -11,12 +11,20 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.hashwaney.im.Factory.FragmentFactory;
 import com.example.hashwaney.im.activity.AddFriendActivity;
 import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.base.BaseFragment;
+import com.hyphenate.chat.EMMessage;
+
+import   com.hyphenate.chat.EMClient;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,6 +43,8 @@ public class MainActivity
     Toolbar             mToolbar;
     @InjectView(R.id.bottom_navigation_bar)
     BottomNavigationBar mBottomNavigationBar;
+    private BadgeItem mBadgeitem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +54,38 @@ public class MainActivity
         initToolbar();
         initBottomNavigation();
         initFrgament();
+        EventBus.getDefault().register(this);
 
 
     }
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void  onEvent(EMMessage emMessage){
+        //更新badgeItem
+        updateBadgeItemCount();
+
+    }
+
+    private void updateBadgeItemCount() {
+        //拿到所有的未读消息
+        int unreadMsgsCount = EMClient.getInstance()
+                                      .chatManager()
+                                      .getUnreadMsgsCount();
+        if (unreadMsgsCount>99){
+            //显示badgeitem
+             mBadgeitem.show();
+            mBadgeitem.setText("99+");
 
 
+        }else if (unreadMsgsCount>0){
+            mBadgeitem.show();
+            mBadgeitem.setText(unreadMsgsCount+"");
+        } else {
+            mBadgeitem.hide();
+
+        }
+
+
+    }
 
     //初始化toolbar
     private void initToolbar() {
@@ -59,20 +96,34 @@ public class MainActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);//有一个返回键
 
     }
+
     //初始化底部导航栏
     private void initBottomNavigation() {
-//        mBottomNavigationBar.addItem(new )
-//        mBottomNavigationBar.setActiveColor(R.color.btn_pressed);
-//        mBottomNavigationBar.setInActiveColor(R.color.btn_default);
-//        mBottomNavigationBar.setTabSelectedListener(this);
-//        mBottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.conversation_selected_2,"消息"))
-//                            .addItem(new BottomNavigationItem(R.mipmap.conversation_selected_2,"联系人"))
-//                            .addItem(new BottomNavigationItem(R.mipmap.plugin_selected_2,"动态"))
-//                            .invalidate();
+        //        mBottomNavigationBar.addItem(new )
+        //        mBottomNavigationBar.setActiveColor(R.color.btn_pressed);
+        //        mBottomNavigationBar.setInActiveColor(R.color.btn_default);
+        //        mBottomNavigationBar.setTabSelectedListener(this);
+        //        mBottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.conversation_selected_2,"消息"))
+        //                            .addItem(new BottomNavigationItem(R.mipmap.conversation_selected_2,"联系人"))
+        //                            .addItem(new BottomNavigationItem(R.mipmap.plugin_selected_2,"动态"))
+        //                            .invalidate();
 
-        BottomNavigationItem conversationItem =new BottomNavigationItem(R.mipmap.conversation_selected_2,"消息");
-        BottomNavigationItem contactItem=new BottomNavigationItem(R.mipmap.contact_selected_2,"联系人");
-        BottomNavigationItem pluginItem =new BottomNavigationItem(R.mipmap.plugin_selected_2,"动态");
+        BottomNavigationItem conversationItem = new BottomNavigationItem(R.mipmap.conversation_selected_2,
+                                                                         "消息");
+        BottomNavigationItem contactItem      = new BottomNavigationItem(R.mipmap.contact_selected_2,
+                                                                         "联系人");
+        BottomNavigationItem pluginItem       = new BottomNavigationItem(R.mipmap.plugin_selected_2,
+                                                                         "动态");
+
+        //设置一个b
+        mBadgeitem = new BadgeItem();
+        mBadgeitem.setText("5");
+        mBadgeitem.setTextColor("#ffffff");
+        mBadgeitem.setBackgroundColor("#FF0000");
+        mBadgeitem.show(true);
+
+        mBadgeitem.show();
+        conversationItem.setBadgeItem(mBadgeitem);
 
 
         mBottomNavigationBar.addItem(conversationItem);
@@ -86,23 +137,26 @@ public class MainActivity
 
 
     }
-        //为了在进入到这个界面的时候，首先添加一个fragment，并且让其指定为第一个，进入到这个界面就去加载这个界面的数据
+
+    //为了在进入到这个界面的时候，首先添加一个fragment，并且让其指定为第一个，进入到这个界面就去加载这个界面的数据
     private void initFrgament() {
         //创建fragment
-       // FragmentFactory.createFragment(0);
+        // FragmentFactory.createFragment(0);
         //如果Activity中已经有老的的fragment的,先全部移除,避免重影
         FragmentManager     supportFragmentManager = getSupportFragmentManager();
-        FragmentTransaction beginTransaction       =supportFragmentManager.beginTransaction();
+        FragmentTransaction beginTransaction       = supportFragmentManager.beginTransaction();
 
-        for (int i = 0; i <titles.length ; i++) {
-            Fragment fragment =  supportFragmentManager.findFragmentByTag(i+"");
-            if (fragment!=null){            //进行为空判断，不然会导致空指针异常
+        for (int i = 0; i < titles.length; i++) {
+            Fragment fragment = supportFragmentManager.findFragmentByTag(i + "");
+            if (fragment != null) {            //进行为空判断，不然会导致空指针异常
                 beginTransaction.remove(fragment);
             }
         }
         beginTransaction.commit();
         //默认选中第一个fragment
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_content,FragmentFactory.createFragment(0),"0").commit();
+        getSupportFragmentManager().beginTransaction()
+                                   .add(R.id.fl_content, FragmentFactory.createFragment(0), "0")
+                                   .commit();
         mTvTitle.setText(titles[0]);
 
     }
@@ -110,10 +164,10 @@ public class MainActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-//            return super.onCreateOptionsMenu(menu); //return true，是为了展示这个menu的
+        //            return super.onCreateOptionsMenu(menu); //return true，是为了展示这个menu的
         //同样的，如何去展示我们这个menu，那么就需要将我们定义好的的menu.xml
         //通过布  局管理器给填充成我们的view
-        getMenuInflater().inflate(R.menu.main,menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
 
     }
@@ -141,10 +195,10 @@ public class MainActivity
             case R.id.share_friend:
                 Toast.makeText(this, "分享好友", Toast.LENGTH_SHORT)
                      .show();
-                 break;
+                break;
             case R.id.add_friend:
-//              跳转到添加好友界面
-                startActivity(AddFriendActivity.class,false);
+                //              跳转到添加好友界面
+                startActivity(AddFriendActivity.class, false);
                 break;
             case android.R.id.home:
                 finish();
@@ -158,7 +212,7 @@ public class MainActivity
     //条目被选中
     @Override
     public void onTabSelected(int position) {
-       //TODO
+        //TODO
         /**
          * 首先判断是否存在fragment，
          * 如果没有，就去创建这个fragment，
@@ -166,33 +220,50 @@ public class MainActivity
          */
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.add(R.id.fl_content,FragmentFactory.createFragment(position),"position");
-
+        //        fragmentTransaction.add(R.id.fl_content,FragmentFactory.createFragment(position),"position");
 
 
         BaseFragment fragment = FragmentFactory.createFragment(position);
-        if (!fragment.isAdded()){
-            fragmentTransaction.add(R.id.fl_content,fragment,""+position);
+        if (!fragment.isAdded()) {
+            fragmentTransaction.add(R.id.fl_content, fragment, "" + position);
         }
-        fragmentTransaction
-                .show(fragment);
+        fragmentTransaction.show(fragment);
         fragmentTransaction.commit();
 
         mTvTitle.setText(titles[position]);
 
 
     }
+
     //条目未被选中
     @Override
     public void onTabUnselected(int position) {
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        BaseFragment fragment = FragmentFactory.createFragment(position);
-        fragmentTransaction.hide(fragment).commit();
+        BaseFragment        fragment            = FragmentFactory.createFragment(position);
+        fragmentTransaction.hide(fragment)
+                           .commit();
     }
+
     //条目被再次选中
     @Override
     public void onTabReselected(int position) {
 
     }
+    //当界面可见的时候也显示出来
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        updateBadgeItemCount();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+
+
+    }
+
 }

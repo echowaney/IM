@@ -49,12 +49,12 @@ public class ConversationAdapter
     @Override
     public void onBindViewHolder(ConversationViewHolder holder, int position) {
         //将数据与视图的绑定
-        EMConversation emConversation = emConversationList.get(position);
-        String userName = emConversation.getUserName(); //拿到和你聊天的用户名
-        EMMessage         lastMessage   = emConversation.getLastMessage();  //拿到最后一条消息
-        long msgTime = lastMessage.getMsgTime();
-        int unreadMsgCount = emConversation.getUnreadMsgCount();
-        EMTextMessageBody emMessageBody = (EMTextMessageBody) lastMessage.getBody();//拿到消息的内容
+        EMConversation    emConversation = emConversationList.get(position);
+        final String      userName       = emConversation.getUserName(); //拿到和你聊天的用户名
+        EMMessage         lastMessage    = emConversation.getLastMessage();  //拿到最后一条消息
+        long              msgTime        = lastMessage.getMsgTime();
+        int               unreadMsgCount = emConversation.getUnreadMsgCount();
+        EMTextMessageBody emMessageBody  = (EMTextMessageBody) lastMessage.getBody();//拿到消息的内容
 
         //视图与数据的绑定
         holder.mTvMsg.setText(emMessageBody.getMessage());
@@ -72,7 +72,29 @@ public class ConversationAdapter
             holder.mTvUnread.setVisibility(View.GONE);
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemClickListener !=null){
+                    mOnItemClickListener.onItemClick(userName);
+
+                }
+            }
+        });
+
     }
+
+    //接口回调 设置条目的点击事件 跳转到聊天界面
+    public interface OnItemClickListener {
+        void  onItemClick(String username);
+
+    }
+    private OnItemClickListener mOnItemClickListener;
+    public  void setOnIntemClick(OnItemClickListener onItemClickListener){
+        this.mOnItemClickListener=onItemClickListener;
+
+    }
+
 
     @Override
     public int getItemCount() {
