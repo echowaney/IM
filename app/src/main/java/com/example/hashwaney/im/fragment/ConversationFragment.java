@@ -82,6 +82,7 @@ public class ConversationFragment
         mIConversationPresenter.initConverstation();
         //TODO 这里如果直接调用  mAdapter.notifyDataSetChanged()是只对老的会话生效的, 如果又有新的用户给你发消息 是不会显示的.
 
+//        aaa
     }
 
     @Override
