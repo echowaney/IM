@@ -65,7 +65,7 @@ public class MainActivity
 
     }
 
-    private void updateBadgeItemCount() {
+    public void updateBadgeItemCount() {
         //拿到所有的未读消息
         int unreadMsgsCount = EMClient.getInstance()
                                       .chatManager()

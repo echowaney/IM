@@ -11,11 +11,16 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.hashwaney.im.activity.ChatActivity;
+import com.example.hashwaney.im.activity.LoginActivity;
 import com.example.hashwaney.im.adapter.MessageListenerAdapter;
+import com.example.hashwaney.im.base.BaseActivity;
 import com.example.hashwaney.im.db.DBUtils;
 import com.example.hashwaney.im.event.OnContactEvent;
+import com.example.hashwaney.im.util.ThreadUtils;
+import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -25,6 +30,7 @@ import com.hyphenate.exceptions.HyphenateException;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,9 +46,11 @@ public class MyApplication
         extends Application
 {
 
-    private int mYuluSound;
-    private int mDuanSound;
+    private int       mYuluSound;
+    private int       mDuanSound;
     private SoundPool mSoundPool;
+    //定义一个集合用来管理所有的Activity
+    private List<BaseActivity> mActivityList = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -52,8 +60,16 @@ public class MyApplication
         initBomb();
         //初始化数据库
         initDb();
+    }
+    //添加activity
+    public void addActivity(BaseActivity activity) {
+        if  (!mActivityList.contains(activity))
+                mActivityList.add(activity);
+    }
 
-
+    //移除activity
+    public void removeActivity(BaseActivity activity) {
+        mActivityList.remove(activity);
     }
 
 
@@ -84,7 +100,10 @@ public class MyApplication
         initMessageReceive();
         //初始化音乐池
         initSoundPool();
+        //注册状态连接监听
+        initConnectionListener();
     }
+
 
     private void initContactManageListener() {
         EMClient.getInstance()
@@ -128,75 +147,85 @@ public class MyApplication
     private void initMessageReceive() {
         EMClient.getInstance()
                 .chatManager()
-                .addMessageListener(new MessageListenerAdapter(){
+                .addMessageListener(new MessageListenerAdapter() {
                     @Override
                     public void onMessageReceived(List<EMMessage> list) {
                         super.onMessageReceived(list);
                         //环信将接收到的消息推送给应用
-                        Log.d(TAG, "onMessageReceived: "+list.get(0));
+                        Log.d(TAG, "onMessageReceived: " + list.get(0));
                         //给应用加上一个音效,如果在前台就发出一个短声音,在后台发出一个长声音
-                      if (isRuninBackground()){
-                          //播放长声音
-                          /**
-                           * 如果在后台,就发送一个通知
-                           *
-                           */
-                          EMMessage    emMessage = list.get(0);
+                        if (isRuninBackground()) {
+                            //播放长声音
+                            /**
+                             * 如果在后台,就发送一个通知
+                             *
+                             */
+                            EMMessage emMessage = list.get(0);
 
 
-                          sendNotification(emMessage);
-                          mSoundPool.play(mYuluSound,1,1,0,0,1);
-                      }else {
+                            sendNotification(emMessage);
+                            mSoundPool.play(mYuluSound, 1, 1, 0, 0, 1);
+                        } else {
 
-                          //播放短声音
-                          mSoundPool.play(mDuanSound,1,1,0,0,1);
-                      }
-                        if (list !=null && list.size()>0)
-                            EventBus.getDefault().post(list.get(0));
+                            //播放短声音
+                            mSoundPool.play(mDuanSound, 1, 1, 0, 0, 1);
+                        }
+                        if (list != null && list.size() > 0) {
+                            EventBus.getDefault()
+                                    .post(list.get(0));
+                        }
                     }
                 });
     }
+
     //发送一个通知
     private void sendNotification(EMMessage emMessage) {
-        EMTextMessageBody body      = (EMTextMessageBody) emMessage.getBody();
-     NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        EMTextMessageBody   body                = (EMTextMessageBody) emMessage.getBody();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                NOTIFICATION_SERVICE);
 
         //意图数组 顺序为先加入的意图放在栈底,就意味着后执行
-        Intent   chatIntent =new Intent(this, ChatActivity.class);
-        Intent   mainIntent =new Intent(this,MainActivity.class);
+        Intent chatIntent = new Intent(this, ChatActivity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        chatIntent.putExtra("username",emMessage.getUserName());
-//        startActivity(chatIntent); ----因为是延时意图,这里不能startactivity
-        Intent[] intents ={mainIntent, chatIntent};
+        chatIntent.putExtra("username", emMessage.getUserName());
+        //        startActivity(chatIntent); ----因为是延时意图,这里不能startactivity
+        Intent[] intents = {mainIntent,
+                            chatIntent};
 
 
-        PendingIntent            intent =PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent intent = PendingIntent.getActivities(this,
+                                                           1,
+                                                           intents,
+                                                           PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification =new Notification.Builder(this)
-                .setContentText(body.getMessage())
-                .setContentTitle("您有一条新消息")
-                .setContentInfo(emMessage.getFrom())    //设置通知来自谁
-                .setContentIntent(intent)   //设置通知的意图
-                .setSmallIcon(R.mipmap.message) //设置小图标 一定要设置
-                .setAutoCancel(true)        //点击了通知可以移除通知状态栏
-                .setPriority(Notification.PRIORITY_MAX) //设置优先级,单锁屏了也可以接收到通知
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.default_avatar))
-                .build();
+        Notification notification = new Notification.Builder(this).setContentText(body.getMessage())
+                                                                  .setContentTitle("您有一条新消息")
+                                                                  .setContentInfo(emMessage.getFrom())    //设置通知来自谁
+                                                                  .setContentIntent(intent)   //设置通知的意图
+                                                                  .setSmallIcon(R.mipmap.message) //设置小图标 一定要设置
+                                                                  .setAutoCancel(true)        //点击了通知可以移除通知状态栏
+                                                                  .setPriority(Notification.PRIORITY_MAX) //设置优先级,单锁屏了也可以接收到通知
+                                                                  .setLargeIcon(BitmapFactory.decodeResource(
+                                                                          getResources(),
+                                                                          R.mipmap.default_avatar))
+                                                                  .build();
         notificationManager.notify(1, notification);
 
 
     }
 
     private boolean isRuninBackground() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(100);
-        ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
+        ActivityManager                       activityManager = (ActivityManager) getSystemService(
+                ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks    = activityManager.getRunningTasks(100);
+        ActivityManager.RunningTaskInfo       runningTaskInfo = runningTasks.get(0);
         boolean equals = runningTaskInfo.topActivity.getPackageName()
                                                     .equals(getPackageName());
-        if (equals){
+        if (equals) {
             //说明是前台
             return false;
-        }else {
+        } else {
             //后台
             return true;
         }
@@ -242,4 +271,42 @@ public class MyApplication
         mYuluSound = mSoundPool.load(this, R.raw.yulu, 1);
     }
 
+    private void initConnectionListener() {
+        EMClient.getInstance()
+                .addConnectionListener(new EMConnectionListener() {
+
+                    @Override
+                    public void onConnected() {
+
+                    }
+
+                    @Override
+                    public void onDisconnected(int i) {
+                        //当连接断开的时候,跳转到登录界面
+
+
+                        //并且将所有的activity清空f
+                        for(BaseActivity activity : mActivityList){
+                            //将所有的activity finish掉 将相当于清空
+                            activity.finish();
+                        }
+
+                        Intent intent = new Intent(MyApplication.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MyApplication.this, "您的账号在其他设备登录....", Toast.LENGTH_SHORT)
+                                     .show();
+                            }
+                        });
+
+
+
+                    }
+                });
+
+
+    }
 }

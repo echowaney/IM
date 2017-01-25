@@ -1,5 +1,6 @@
 package com.example.hashwaney.im.fragment;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import com.example.hashwaney.im.presenter.impl.ConverstationPresenter;
 import com.example.hashwaney.im.view.IConversationView;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMClient;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -74,6 +76,26 @@ public class ConversationFragment
 
     @Override
     public void onClick(View v) {
+        //TODO 点击按钮将未读消息全部标记为已读
+        //        mFab.setRotation();
+        ObjectAnimator.ofFloat(mFab, "rotation", 0f, 360f)
+                      .setDuration(500)
+                      .start();
+        //将消息标记为已
+        // EMClient.
+        EMClient.getInstance()
+                .chatManager()
+                .markAllConversationsAsRead();
+        //通知Fragment界面刷新
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+
+        }
+
+        //通知MainActivity界面进行刷新
+        MainActivity activity = (MainActivity) getActivity();
+        activity.updateBadgeItemCount();
+
 
     }
 
@@ -85,14 +107,21 @@ public class ConversationFragment
         //可以将初始化这个方法重新调用一下
         mIConversationPresenter.initConverstation();
         //TODO 这里如果直接调用  mAdapter.notifyDataSetChanged()是只对老的会话生效的, 如果又有新的用户给你发消息 是不会显示的.
-
+      //  mAdapter = null;
         //        aaa
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mIConversationPresenter.initConverstation();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         //更新一下adapter
-        if (mAdapter !=null){
+        if (mAdapter != null) {
 
             mAdapter.notifyDataSetChanged();
         }
@@ -100,18 +129,16 @@ public class ConversationFragment
 
     @Override
     public void initConversationView(List<EMConversation> emConversationList) {
-        //        if (mAdapter == null) {
-
-        mAdapter = new ConversationAdapter(emConversationList);
-        mRecycleview.setAdapter(mAdapter);
-        mAdapter.setOnIntemClick(this);
-        //        }else {
-        //            mAdapter.notifyDataSetChanged();//那就更新一下数据 //TODO 这里有一个bug 就是把这里注释掉 就可以展示出来
-        //        }
+       // if (mAdapter == null) {
+            mAdapter = new ConversationAdapter(emConversationList);
+            mRecycleview.setAdapter(mAdapter);
+            mAdapter.setOnIntemClick(this);
+        //} else {
+           // mAdapter.notifyDataSetChanged();//那就更新一下数据 //TODO 这里有一个bug 就是把这里注释掉 就可以展示出来
+        //}
 
 
     }
-
 
 
     @Override

@@ -43,26 +43,29 @@ public class ConverstationPresenter
                                                                                   .chatManager()
                                                                                   .getAllConversations();
 
-//        //username 是所有的联系人,---是从数据库获取的
-//       EMConversation emConversation = allConversations.get("username");
-//
-      Collection<EMConversation> emConversations = allConversations.values();
-//        Set<String>                strings         = allConversations.keySet();
-        //定义一个集合 去装这个会话
-     mEMConversationList.clear();//TODO 需不需先将集合清空呢  不清空的话是什么效果 以前的会话会进行保留, 清空的话就会去拿取最新的会话
-       // mEMConversationList.add(emConversation);
-        mEMConversationList.addAll(emConversations);
-        /**
-         *  将会话进行一个排序,将最近消息显示在最上面(倒序)
-         */
-        Collections.sort(mEMConversationList, new Comparator<EMConversation>() {
-            @Override
-            public int compare(EMConversation o1,
-                               EMConversation o2)
-            {
-                return (int) (o2.getLastMessage().getMsgTime()-o1.getLastMessage().getMsgTime());
-            }
-        });
+
+            //        //username 是所有的联系人,---是从数据库获取的
+            //       EMConversation emConversation = allConversations.get("username");
+            //
+            Collection<EMConversation> emConversations = allConversations.values();
+            //        Set<String>                strings         = allConversations.keySet();
+            //定义一个集合 去装这个会话
+            mEMConversationList.clear();//TODO 需不需先将集合清空呢  不清空的话是什么效果 以前的会话会进行保留, 清空的话就会去拿取最新的会话
+            // mEMConversationList.add(emConversation);
+            mEMConversationList.addAll(emConversations);
+            /**
+             *  将会话进行一个排序,将最近消息显示在最上面(倒序)
+             */
+            Collections.sort(mEMConversationList, new Comparator<EMConversation>() {
+                @Override
+                public int compare(EMConversation o1,
+                                   EMConversation o2)
+                {
+                    return (int) (o2.getLastMessage().getMsgTime()-o1.getLastMessage().getMsgTime());
+                }
+            });
+
+
        //通知view进行UI更新
         mIConversationView.initConversationView(mEMConversationList);
 

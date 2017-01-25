@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.example.hashwaney.im.MyApplication;
 import com.example.hashwaney.im.util.Constans;
 
 /**
@@ -25,6 +26,7 @@ public class BaseActivity
     public ProgressDialog    mDialog;
     private Toast sToast;
     private Toast mToast;
+    private MyApplication mApplication;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +36,10 @@ public class BaseActivity
         mSp = getSharedPreferences("config", Context.MODE_PRIVATE);
         //初始化进度条
         mDialog = new ProgressDialog(this);
+
+        //添加所有的activity
+        mApplication = (MyApplication) getApplication();
+        mApplication.addActivity(this);
 
     }
 
@@ -99,6 +105,10 @@ public class BaseActivity
         super.onDestroy();
         //界面销毁的时候进行界面的销毁
       mDialog.dismiss();
+        //移除所有的activity
+        mApplication.removeActivity(this);
+
+
     }
     public void showToast(String msg){
         if (mToast==null){
